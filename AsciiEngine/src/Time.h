@@ -19,7 +19,7 @@ class Time {
         }
 
         //Returns the time (milli-seconds) since the last frame
-        double getTime() {
+        int getTime() {
             currTime = clock() - startTime;
             startTime = clock(); //Reset startTime for next frame
 
