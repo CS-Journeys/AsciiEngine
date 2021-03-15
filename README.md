@@ -121,10 +121,6 @@ void onLoad() {
     obj2.x = 3;
     obj2.y = 4;
 }
-
-void Update() {
-
-}
 ```
 
 #### Window/Screen class
@@ -144,15 +140,21 @@ Public Methods:
 
 This is called automatically by the engine at the start of each execution frame, and is not recommended to be called by a user inside of their own game script.
 
+
+
 ##### clearScreen()
 `clearScreen()` is a Screen class function that clears the console window.
 
 This function is used by the [drawScreen()](#drawScreen()) function for drawing the game window.
 
+
+
 ##### drawScreen()
 `drawScreen(ostream& out)` is a Screen class function that draws the game window onto an output stream (cout by default) at the end of each execution frame.
 
 This function is called automatically by the engine at every execution frame, and is *not* recommended to be called inside of a user's own game.
+
+
 
 ##### spawnObj()
 `spawnObj(int& xPos, int& yPos, char c)` is a Screen class function that spawns an object character onto the screen at a specified position.
@@ -160,7 +162,6 @@ This function is called automatically by the engine at every execution frame, an
 If the position is less than or greater than the screen dimensions, the position is automatically wrapped back around to fit inside the game window when called.
 
 ```c++
-
 GameObject obj1;
 
 void onLoad() {
@@ -181,7 +182,6 @@ void Update() {
 *Highly* recommended that this function is called somewhere in the user's `Update()` function (else the game will be running on an infinite loop).
 
 ```c++
-
 int i = 0;
 
 void Update() {
@@ -207,7 +207,6 @@ Public Methods:
 Currently, the key char being passed to the function must be an uppercase, alphabetic character.
 
 ```c++
-
 GameObject obj1;
 
 void onLoad() {
@@ -230,10 +229,54 @@ void Update() {
 ##### keyUp()
 `keyUp(char key)` is a Keyboard class function that returns true if a key is not being held down.
 
+```cpp
+GameObject obj1;
+
+void onLoad() {
+    obj1.x = 0;
+    obj1.y = 0;
+
+    obj1.pt = '@';
+}
+
+void Update() {
+    //Increases y position by 1 when W key is not being pressed
+    if (Input.keyUp('W')) {
+        obj1.y++;
+    }
+
+    Window.spawnObj(obj1.x, obj1.y, obj1.pt);
+}
+```
+
+
+
 ##### keyPress()
 `keyPress(char key)` is a Keyboard class function that returns true if a key is pressed once.
 
 Different from keyDown in that instead of returning true when a key is held down, it returns true when a key is pressed after being in a state of release. Will return false if a key is held down after already being pressed.
+
+```cpp
+GameObject obj1;
+
+void onLoad() {
+    obj1.x = 0;
+    obj1.y = 0;
+
+    obj1.pt = '@';
+}
+
+void Update() {
+    //Increases y position by 1 when W key is pressed once
+    if (Input.keyPress('W')) {
+        obj1.y++;
+    }
+
+    Window.spawnObj(obj1.x, obj1.y, obj1.pt);
+}
+```
+
+
 
 #### runTime/Time class
 runTime is an engine object of the Time class.
