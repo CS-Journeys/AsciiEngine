@@ -152,6 +152,8 @@ This function is used by the [drawScreen()](#drawScreen) function for drawing th
 
 
 
+
+
 ##### drawScreen()
 `drawScreen(ostream& out)` is a Screen class function that draws the game window onto an output stream (cout by default) at the end of each execution frame.
 
