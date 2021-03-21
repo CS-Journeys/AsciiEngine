@@ -20,7 +20,7 @@ void exec() {
     while (!Window.done) {
         Window.initScreen();
         Update();
-
+        
         Window.drawScreen(cout);
     }
 }

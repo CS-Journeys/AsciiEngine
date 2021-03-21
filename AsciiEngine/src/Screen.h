@@ -7,6 +7,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include "GameObject.h"
+
 #include <iostream>
 #include <string>
 
@@ -15,13 +17,7 @@ using namespace std;
 class Screen {
     private:
         string gameScreen = ""; //The "game window"
-    public:
-        int SCREEN_WIDTH = 10; //Window width (default value of 10)
-        int SCREEN_HEIGHT = 5; //Window height (default value of 5)
-
-        char GAME_BACKGROUND = '.'; //Window background
-
-        bool done = false; //Execution bool
+        string oldScreen = "";
 
         //Game window initializer
         void initScreen() {
@@ -44,35 +40,71 @@ class Screen {
             }
         }
 
+        //Draw GameObject sprite with multiple characters
+        void drawSprite(int pos, string s) {
+            int j = 0, i = 0;
+
+            while (pos < gameScreen.size() && i < s.size()) {
+                if (gameScreen[pos] != '\n') {
+                    //Add character to screen string
+                    if (s[i] != '\n') {
+                        //Replace whitespace in sprite
+                        if (s[i] == ' ') {
+                            gameScreen[pos] = GAME_BACKGROUND;
+                        } else {
+                            gameScreen[pos] = s[i];
+                        }
+                    } else {
+                        //Go to new line if newline character in sprite
+                        pos += SCREEN_WIDTH - j;
+                        j = -1;
+                    }
+                }
+
+                //Increment screen/sprite position
+                pos++;
+                i++;
+                j++;
+            }
+
+            return;
+        }
+    public:
+        int SCREEN_WIDTH = 10; //Window width (default value of 10)
+        int SCREEN_HEIGHT = 5; //Window height (default value of 5)
+
+        char GAME_BACKGROUND = '.'; //Window background
+
+        bool done = false; //Execution bool
+
         //Outputs the screen data string
         void drawScreen(ostream& out) {
-            clearScreen();
+            if (oldScreen != gameScreen) {
+                clearScreen();
 
-            out << gameScreen;
+                out << gameScreen; 
+                oldScreen = gameScreen;
+            }
         }
 
         //Plots an object onto the screen data string
-        void spawnObj(int& xPos, int& yPos, char c) {
+        void spawnObj(GameObject& obj) {
             int pos = 0;
-
-            //If invalid position, set to inside window
-            if (xPos >= SCREEN_WIDTH) {
-                xPos = 0;
-            } else if (xPos < 0) {
-                xPos = SCREEN_WIDTH - 1;
-            }
-
-            if (yPos >= SCREEN_HEIGHT) {
-                yPos = 0;
-            } else if (yPos < 0) {
-                yPos = SCREEN_HEIGHT - 1;
-            }
-
-            //Plot the object at the position in the screen
+            
+            //Iterate through screen height (rows)
             for (int h = 0; h < SCREEN_HEIGHT; h++) {
+                //Iterate through screen width (columns)
                 for (int w = 0; w < SCREEN_WIDTH; w++) {
-                    if (w == xPos && h == yPos)  {
-                        gameScreen[pos] = c;
+                    //Check object position is reached
+                    if (w == obj.x && h == obj.y)  {
+                        if (obj.sprite.size() > 1) {
+                            drawSprite(pos, obj.sprite);
+                        } else {
+                            //Plot 1 character if sprite size is less than 2
+                            gameScreen[pos] = obj.sprite[0];
+                        }
+
+                        //End execution once object has been plotted
                         return;
                     }
 

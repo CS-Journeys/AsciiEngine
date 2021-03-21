@@ -20,8 +20,8 @@ int main() {
     }
 
     //Get input game file
-    cout << "Enter Game File (with \".cpp\" extension): " << endl;
-    cin >> fileName;
+    cout << "Enter Game File Path (with \".cpp\" extension): " << endl;
+    getline(cin, fileName);
 
     //Get output executable name
     cout << "Enter Game Project Name (omit file extension): " << endl;
@@ -35,13 +35,15 @@ int main() {
         cout << "Error: Game file either not found or not a (.cpp) extension." << endl;
         return 1;
     }
+    inputFile.close();
     
     //Compile command for game
-    const string command = R"(g++ -static-libgcc -static-libstdc++ -o )" + gameName + ".exe" + R"( .\AsciiEngine\game_ext.cpp .\AsciiEngine\Engine.cpp )" + fileName;
+    const string command = R"(g++ -static-libgcc -static-libstdc++ -o )" + gameName + ".exe" + R"( .\AsciiEngine\game_ext.cpp .\AsciiEngine\Engine.cpp )" + "\""+fileName+"\"";
 
     //Compile the input game
     system(command.c_str());
     cout << gameName << ".exe compiled successfully" << endl; //Confirmation message
+
 
     return 0;
 }

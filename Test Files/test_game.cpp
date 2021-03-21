@@ -4,26 +4,37 @@
  * Simple example game to test the AsciiEngine++'s capabilities
 */
 
-#include "AsciiEngine/Engine.h"
+#include "../AsciiEngine/Engine.h"
 
 GameObject player; //Player game object
+GameObject obj2;
+
 int countDown; //Countdown variable
 
 //onLoad function executes only once 
 // the start of the program execution
 void onLoad() {
     countDown = 2000;
-    
+
     //Set player position
     player.x = 3;
     player.y = 3;
 
-    //Set player appearance
-    player.pt = '#';
+    obj2.x = 4;
+    obj2.y = 4;
+
+    obj2.sprite = '@';
 
     //Set game screen width/height
-    Window.SCREEN_WIDTH = 10;
-    Window.SCREEN_HEIGHT = 5;
+    Window.SCREEN_WIDTH = 20;
+    Window.SCREEN_HEIGHT = 10;
+
+    //Read in ascii art sprite from input file
+    ifstream spriteFile;
+    char c;
+
+    //Read in sprite from file
+    player.readSprite("Test Files/art.txt");
 }
 
 //Update method executes every frame
@@ -47,19 +58,14 @@ void Update() {
         Window.quit();
     }
 
-    //When countdown hits 0 (every 2 seconds)
+    //Move object relative to player
     if (countDown <= 0) {
-        //Increment player character value
-        //Will likely cause some funky stuff
-        player.pt++; 
+        obj2.moveRelativeTo(player, 5, 5);
 
-        Window.SCREEN_WIDTH++;
-        Window.SCREEN_HEIGHT = Window.SCREEN_WIDTH / 2;
-
-        //Reset countdown
         countDown = 2000;
     }
 
     //Spawn player in the scene
-    Window.spawnObj(player.x, player.y, player.pt);
+    Window.spawnObj(player);
+    Window.spawnObj(obj2);
 }
