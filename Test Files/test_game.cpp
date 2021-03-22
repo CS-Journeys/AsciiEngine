@@ -34,7 +34,7 @@ void onLoad() {
     char c;
 
     //Read in sprite from file
-    player.readSprite("Test Files/art.txt");
+    player.readSprite("Test Files/art.txt", 5);
 }
 
 //Update method executes every frame

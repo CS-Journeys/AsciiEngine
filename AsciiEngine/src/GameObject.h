@@ -33,12 +33,23 @@ struct GameObject {
     }
 
     //Reads an inputted ascii art sprite from user defined file
-    void readSprite(string path) {
+    void readSprite(string path, int lastLine = -1) {
         char c;
         ifstream spriteFile (path.c_str());
+        bool done = false;
 
-        while (spriteFile.get(c)) {
+        int i = 0;
+        //Read sprite file to certain line or end of file
+        while (spriteFile.get(c) && !done) {
             sprite += c;
+
+            if (lastLine >= 0 && i == lastLine) {
+                done = true;
+            }
+
+            if (c == '\n') {
+                i++;
+            }
         }
 
         spriteFile.close();

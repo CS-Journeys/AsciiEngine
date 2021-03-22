@@ -19,18 +19,6 @@ class Screen {
         string gameScreen = ""; //The "game window"
         string oldScreen = "";
 
-        //Game window initializer
-        void initScreen() {
-            gameScreen = "";
-            for (int h = 0; h < SCREEN_HEIGHT; h++) {
-                for (int w = 0; w < SCREEN_WIDTH; w++) {
-                    gameScreen += GAME_BACKGROUND;
-                }
-
-                gameScreen += '\n';
-            }
-        }
-
         //Clears the window so it can update
         void clearScreen() {
             //Note: Using system() is bad practice and
@@ -77,6 +65,18 @@ class Screen {
 
         bool done = false; //Execution bool
 
+        //Game window initializer
+        void initScreen() {
+            gameScreen = "";
+            for (int h = 0; h < SCREEN_HEIGHT; h++) {
+                for (int w = 0; w < SCREEN_WIDTH; w++) {
+                    gameScreen += GAME_BACKGROUND;
+                }
+
+                gameScreen += '\n';
+            }
+        }
+        
         //Outputs the screen data string
         void drawScreen(ostream& out) {
             if (oldScreen != gameScreen) {
@@ -87,32 +87,18 @@ class Screen {
             }
         }
 
-        //Plots an object onto the screen data string
+        //Plots an object onto the screen
         void spawnObj(GameObject& obj) {
-            int pos = 0;
+            //Get position in gameScreen
+            int pos = SCREEN_WIDTH * obj.y;
+            pos += obj.y + obj.x;
             
-            //Iterate through screen height (rows)
-            for (int h = 0; h < SCREEN_HEIGHT; h++) {
-                //Iterate through screen width (columns)
-                for (int w = 0; w < SCREEN_WIDTH; w++) {
-                    //Check object position is reached
-                    if (w == obj.x && h == obj.y)  {
-                        if (obj.sprite.size() > 1) {
-                            drawSprite(pos, obj.sprite);
-                        } else {
-                            //Plot 1 character if sprite size is less than 2
-                            gameScreen[pos] = obj.sprite[0];
-                        }
-
-                        //End execution once object has been plotted
-                        return;
-                    }
-
-                    pos++;
-                }
-
-                pos++;
+            if (obj.sprite.size() > 1) {
+                drawSprite(pos, obj.sprite);
+            } else if (obj.sprite.size() > 0) {
+                gameScreen[pos] = obj.sprite[0];
             }
+            return;
         }
 
         //Quit game
