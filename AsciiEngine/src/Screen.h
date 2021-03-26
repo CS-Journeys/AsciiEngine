@@ -24,7 +24,11 @@ class Screen {
             //Note: Using system() is bad practice and
             //      should be changed later
             if (system(NULL)) {
+                #ifdef _WIN32
                 system("cls");
+                #else
+                system("clear");
+                #endif
             }
         }
 

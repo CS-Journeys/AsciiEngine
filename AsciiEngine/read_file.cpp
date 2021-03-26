@@ -6,6 +6,8 @@
 */
 #include "Engine.h"
 
+#include <thread>
+#include <chrono>
 #include <fstream>
 
 int main() {
@@ -16,7 +18,7 @@ int main() {
     launchFile.open("AsciiEngine/lib/launch.txt");
     while (getline(launchFile, line)) {
         cout << line << endl;
-        Sleep(100);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     //Get input game file
@@ -38,7 +40,11 @@ int main() {
     inputFile.close();
     
     //Compile command for game
+    #ifdef _WIN32
     const string command = R"(g++ -static-libgcc -static-libstdc++ -o )" + gameName + ".exe" + R"( .\AsciiEngine\game_ext.cpp .\AsciiEngine\Engine.cpp )" + "\""+fileName+"\"";
+    #else
+    const string command = "g++ -static-libgcc -static-libstdc++ -o " + gameName + " ./AsciiEngine/game_ext.cpp ./AsciiEngine/Engine.cpp " + fileName;
+    #endif
 
     //Compile the input game
     system(command.c_str());

@@ -4,30 +4,56 @@
  * Contains necessary functions for unbuffered key input
  * 
  * Note: currently the keyboard only supports 
- *       windows keyboard events
+ *       windows and linux keyboard events
 */
 
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
+#ifdef _WIN32
 #include <windows.h>
+#elif __unix__
+#include "LinuxTerminal.h"
+#elif __APPLE__
+#error Coming Soon
+#else
+#error OS not supported
+#endif
+
 #include <map>
 
 class Keyboard {
     private:
+        #ifdef __unix__
+        Terminal linuxTerminal;
+        #endif
+
         map<char, bool> keys;
-        
+   
         //Initializes a map of all alphabetic keyboard keys
         //More keys need to be mapped (such as digits, punctuation, etc)
-        void Init_Keys() {
+        void initKeys() {
             for (int i = 41; i < 61; i++) {
                 keys.insert(pair<char, bool>((char) i, false));
             }
+         }
+
+        //getKey
+        //Gets a single key input using unbufferd input
+        char getKey(char& key) {
+            //TODO: convert standard UNIX keys to Windows Virtual-Key Codes
+            #ifdef __unix__
+            key = linuxTerminal.getChar();
+            #elif _WIN32
+            getAsyncKeyState(key);
+            #endif
+            return key;
         }
+
     public:
         //Default constructor
         Keyboard() {
-            Init_Keys();
+            initKeys();
         }
 
         //keyDown
@@ -35,7 +61,7 @@ class Keyboard {
         bool keyDown(char key) {
             bool down = false;
 
-            if (GetAsyncKeyState(key) < 0) {
+            if (getKey(key) < 0) {
                 down = true;
 
                 keys[key] = true;
@@ -51,7 +77,7 @@ class Keyboard {
         bool keyUp(char key) {
             bool up = false;
             
-            if (GetAsyncKeyState(key) >= 0) {
+            if (getKey(key) >= 0) {
                 up = true;
 
                 keys[key] = false;
@@ -67,14 +93,13 @@ class Keyboard {
         bool keyPress(char key) {
             bool pressed = false;
 
-            if (GetAsyncKeyState(key) < 0 && !keys[key]) {
+            if (getKey(key) < 0 && !keys[key]) {
                 pressed = true;
 
                 keys[key] = true;
             } else {
                 keyUp(key);
             }
-
 
             return pressed;
         }
