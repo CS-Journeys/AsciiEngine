@@ -9,6 +9,7 @@
 
 #include "GameObject.h"
 
+#include <Windows.h>
 #include <iostream>
 #include <string>
 
@@ -18,15 +19,6 @@ class Screen {
     private:
         string gameScreen = ""; //The "game window"
         string oldScreen = "";
-
-        //Clears the window so it can update
-        void clearScreen() {
-            //Note: Using system() is bad practice and
-            //      should be changed later
-            if (system(NULL)) {
-                system("cls");
-            }
-        }
 
         //Draw GameObject sprite with multiple characters
         void drawSprite(int pos, string s) {
@@ -57,6 +49,17 @@ class Screen {
 
             return;
         }
+
+        //Sets cursor position in console window
+        void setCursorPosition(ostream& out, int x, int y) {
+            static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+            out.flush();
+
+            COORD position = { (SHORT) x, (SHORT) y };
+            //Set cursor position
+            SetConsoleCursorPosition(hOut, position);
+        }
+
     public:
         int SCREEN_WIDTH = 10; //Window width (default value of 10)
         int SCREEN_HEIGHT = 5; //Window height (default value of 5)
@@ -79,12 +82,34 @@ class Screen {
         
         //Outputs the screen data string
         void drawScreen(ostream& out) {
-            if (oldScreen != gameScreen) {
-                clearScreen();
+            int pos = 0;
 
-                out << gameScreen; 
+            //Initialize oldScreen on first frame
+            if (oldScreen == "") {
+                out << gameScreen;
                 oldScreen = gameScreen;
+                return;
             }
+
+            for (int h = 0; h < SCREEN_HEIGHT; h++) {
+                for (int w = 0; w < SCREEN_WIDTH; w++) {
+                    //Update screen at changed character positions
+                    if (oldScreen[pos] != gameScreen[pos]) {
+                        //Set cursor to changed positions and
+                         //write to screen at changed positions
+                        setCursorPosition(out, w, h);
+                        out << gameScreen[pos];
+                        oldScreen[pos] = gameScreen[pos];
+                    }
+
+                    pos++;
+                }
+
+                pos++;
+            }
+
+            //Reset cursor position
+            setCursorPosition(out, SCREEN_WIDTH + 1, SCREEN_HEIGHT + 1);
         }
 
         //Plots an object onto the screen

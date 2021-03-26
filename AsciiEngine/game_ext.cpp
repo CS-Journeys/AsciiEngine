@@ -16,6 +16,9 @@ int main() {
 
 void exec() {
     onLoad();
+    //Note: Using system() is bad practice and
+        // should be changed later
+    system("cls");
 
     while (!Window.done) {
         Window.initScreen();

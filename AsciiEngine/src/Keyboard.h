@@ -17,10 +17,11 @@ class Keyboard {
     private:
         map<char, bool> keys;
         
-        //Initializes a map of all alphabetic keyboard keys
-        //More keys need to be mapped (such as digits, punctuation, etc)
+        //Initializes a map of keyboard keys
+        //More keys need to be mapped (enumerated data type likely needed)
         void Init_Keys() {
-            for (int i = 41; i < 61; i++) {
+            //Map alphabetic, digit, punctuation keys
+            for (int i = 32; i < 97; i++) {
                 keys.insert(pair<char, bool>((char) i, false));
             }
         }
@@ -78,10 +79,6 @@ class Keyboard {
 
             return pressed;
         }
-
-        //keyPress function needed
-        //This function does only 1 thing each time the key is pressed
-        //Key must be released and then pressed again to do thing again
 };
 
 #endif
