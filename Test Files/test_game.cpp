@@ -5,9 +5,10 @@
 */
 
 #include "../AsciiEngine/Engine.h"
+#include <cmath>
 
 GameObject player; //Player game object
-GameObject obj2;
+GameObject object1; 
 
 int countDown; //Countdown variable
 
@@ -15,15 +16,14 @@ int countDown; //Countdown variable
 // the start of the program execution
 void onLoad() {
     countDown = 2000;
-
+    
     //Set player position
-    player.x = 3;
-    player.y = 3;
+    player.x = 1;
+    player.y = 1;
 
-    obj2.x = 4;
-    obj2.y = 4;
-
-    obj2.sprite = '@';
+    //Set object positions
+    object1.x = 3;
+    object1.y = 3;
 
     //Set game screen width/height
     Window.SCREEN_WIDTH = 20;
@@ -33,17 +33,18 @@ void onLoad() {
     ifstream spriteFile;
     char c;
 
-    //Read in sprite from file
-    player.readSprite("Test Files/art.txt", 5);
+    //Read in sprites from file
+    player.readSprite("Test Files/art.txt", 1, 4);
+    object1.readSprite("Test Files/art.txt", 6, 7);
 }
 
 //Update method executes every frame
 // of the program execution
 void Update() {
-    //Subtract countdown variable by the time (in milli-seconds)
+    //Subtract countdown by the time (in milli-seconds)
     countDown -= runTime.getTime();
 
-    //Key user input (WASD)
+    //User input
     if (Input.keyPress('W')) {
         player.y--;
     } else if (Input.keyPress('S')) {
@@ -54,18 +55,19 @@ void Update() {
         player.x++;
     }
 
+    //Quit Game
     if (Input.keyPress('Q')) {
         Window.quit();
     }
 
     //Move object relative to player
     if (countDown <= 0) {
-        obj2.moveRelativeTo(player, 5, 5);
+        object1.moveRelativeTo(player, 5, 5);
 
         countDown = 2000;
     }
 
-    //Spawn player in the scene
+    //Spawn objects in the scene
     Window.spawnObj(player);
-    Window.spawnObj(obj2);
+    Window.spawnObj(object1);
 }

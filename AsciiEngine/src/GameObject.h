@@ -37,16 +37,21 @@ class GameObject {
         }
 
         //Reads an inputted ascii art sprite from user defined file
-        void readSprite(string path, int lastLine = -1) {
+        void readSprite(string path, int firstLine = 0, int lastLine = -1) {
             char c;
             ifstream spriteFile (path.c_str());
             bool done = false;
+
+            //Start line at 0th index
+            firstLine--;
 
             int i = 0;
             int currXSize = 0;
             //Read sprite file to certain line or end of file
             while (spriteFile.get(c) && !done) {
-                sprite += c;
+                if (firstLine < 0 || i >= firstLine) {
+                    sprite += c;
+                }
                 
                 //If at least one character is found, height is 1
                 if (sprHeight == 0) {
