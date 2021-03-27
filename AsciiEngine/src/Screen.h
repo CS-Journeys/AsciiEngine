@@ -20,24 +20,36 @@ class Screen {
         string gameScreen = ""; //The "game window"
         string oldScreen = "";
 
-        //Draw GameObject sprite with multiple characters
-        void drawSprite(int pos, string s) {
-            int j = 0, i = 0;
+        //Checks that a position is within the screen boundaries
+        bool withinBoundaries(int x, int y) {
+            return x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT;
+        }
 
-            while (pos < gameScreen.size() && i < s.size()) {
+        //Draw GameObject sprite with multiple characters
+        void drawSprite(int pos, GameObject& obj) {
+            int j = 0, i = 0;
+            int spriteX, spriteY = obj.y;
+
+            while (pos < gameScreen.size() && i < obj.sprite.size()) {
+                spriteX = j + obj.x;
+
                 if (gameScreen[pos] != '\n') {
                     //Add character to screen string
-                    if (s[i] != '\n') {
-                        //Replace whitespace in sprite
-                        if (s[i] == ' ') {
-                            gameScreen[pos] = GAME_BACKGROUND;
-                        } else {
-                            gameScreen[pos] = s[i];
+                    if (obj.sprite[i] != '\n') {
+                        //Check sprite character is within screen
+                        if (withinBoundaries(spriteX, spriteY)) {
+                            //Replace whitespace in sprite with background
+                            if (obj.sprite[i] == ' ') {
+                                gameScreen[pos] = GAME_BACKGROUND;
+                            } else { //Draw regular character to screen
+                                gameScreen[pos] = obj.sprite[i];
+                            }
                         }
                     } else {
                         //Go to new line if newline character in sprite
                         pos += SCREEN_WIDTH - j;
                         j = -1;
+                        spriteY++;
                     }
                 }
 
@@ -119,7 +131,7 @@ class Screen {
             pos += obj.y + obj.x;
             
             if (obj.sprite.size() > 1) {
-                drawSprite(pos, obj.sprite);
+                drawSprite(pos, obj);
             } else if (obj.sprite.size() > 0) {
                 gameScreen[pos] = obj.sprite[0];
             }
